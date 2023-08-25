@@ -13,9 +13,12 @@ class ExpenseTag(db.Model):
     background_color = db.Column(db.String(), default='#18181B', nullable=False)
     
     
-    def __init__(self, tag_name, background_color):
+    def __init__(self, tag_name, background_color='#18181B'):
         self.tag_name = tag_name
         self.background_color = background_color
+        
+    def get_new_tag():
+        return ExpenseTag("")
         
         
 class ExpenseTagSchema(ma.Schema):

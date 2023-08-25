@@ -17,6 +17,9 @@ class ExpenseCategory(db.Model):
         self.category_name = category_name
         self.description = description
         
+    def get_new_expense_category():
+        return ExpenseCategory("", "")
+        
         
 class ExpenseCategorySchema(ma.Schema):
     class Meta:

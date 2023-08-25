@@ -13,14 +13,14 @@ def get_expenses() -> Response:
     return controllers.get_expenses(request)
 
 @expense.route('/expense/<expense_id>', methods=['GET'])
-def get_expense() -> Response:
-    return controllers.expense_add(request)
+def get_expense(expense_id) -> Response:
+    return controllers.get_expense(request, expense_id)
 
 @expense.route('/expense/<expense_id>', methods=['PUT'])
-def update_expense() -> Response:
-    return controllers.update_expense(request)
+def update_expense(expense_id) -> Response:
+    return controllers.update_expense(request, expense_id)
 
 @expense.route('/expense/<expense_id>', methods=['DELETE'])
-def delete_expense() -> Response:
-    return controllers.delete_expense(request)
+def delete_expense(expense_id) -> Response:
+    return controllers.delete_expense(request, expense_id)
 

@@ -15,15 +15,15 @@ def get_users() -> Response:
 
 
 @user.route('/user/<user_id>', methods=['GET'])
-def get_user() -> Response:
-    return controllers.get_user(request)
+def get_user(user_id) -> Response:
+    return controllers.get_user(request, user_id)
 
 
 @user.route('/user/<user_id>', methods=['PUT', 'PATCH'])
-def update_user() -> Response:
-    return controllers.update_user(request)
+def update_user(user_id) -> Response:
+    return controllers.update_user(request, user_id)
 
 
 @user.route('/user/<user_id>', methods=['DELETE'])
-def delete_user() -> Response:
-    return controllers.delete_user(request)
+def delete_user(user_id) -> Response:
+    return controllers.delete_user(request, user_id)

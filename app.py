@@ -18,6 +18,8 @@ from models.profile_image import Profile
 from routes.user_routes import user
 from routes.profile_routes import profile
 from routes.expense_routes import expense
+from routes.expense_category_routes import category
+from routes.expense_tag_routes import tag
 from routes.authentication_routes import auth
 
 import config
@@ -41,6 +43,8 @@ ma = Marshmallow(app)
 app.register_blueprint(user)
 app.register_blueprint(profile)
 app.register_blueprint(expense)
+app.register_blueprint(category)
+app.register_blueprint(tag)
 app.register_blueprint(auth)
 
 def create_all():
@@ -61,6 +65,15 @@ def create_all():
             db.session.add(new_profile)
             db.session.commit()
             print("profile created")
+            
+            print("creating expense category...")
+            new_expense_category = ExpenseCategory(
+                category_name=config.category_name,
+                description=config.description
+            )
+            db.session.add(new_expense_category)
+            db.session.commit()
+            print("expense category created")
             
             password = input(f"\n\nCreate password for {config.email}: ")
             hashed_password = bcrypt.generate_password_hash(password).decode("utf8")

@@ -15,17 +15,19 @@ def expense_add(req: flask.Request, auth_info) -> flask.Response:
     post_data = req.json
     new_expense = Expense.get_new_expense()
     
-    new_expense.user_id = auth_info.user_id
-    
-    
     populate_object(new_expense, post_data)
     
-    if not post_data:
-        return jsonify({"message": "missing required fields"}), 400
+    new_expense.user_id = auth_info.user_id
     
+    if not new_expense.category_id:
+        return jsonify("category_id required"), 400
     
-
-        
+    if not new_expense.user_id:
+        return jsonify("user_id required"), 400
+    
+    if not new_expense.amount:
+        return jsonify("amount required"), 400
+    
     db.session.add(new_expense)
     db.session.commit()
     
@@ -55,7 +57,7 @@ def get_expense(req: flask.Request, expense_id, auth_info) -> flask.Response:
 @authenticate
 def update_expense(req: flask.Request, expense_id, auth_info) -> flask.Response:
     if not is_valid_uuid(expense_id):
-        return jsonify("Invalid expense_id"), 404
+        return jsonify("Invalid expense_id"), 400
     
     data = req.get_json()
     
@@ -65,10 +67,13 @@ def update_expense(req: flask.Request, expense_id, auth_info) -> flask.Response:
         return jsonify("Expense not found"), 404
     
     populate_object(expense, data)
+    
+    if not data:
+        return jsonify("no fields to update"), 400
 
     db.session.commit()
     
-    return jsonify(expense_schema.dump(expense)), 200
+    return jsonify("successfully updated expense", expense_schema.dump(expense)), 200
     
 @authenticate
 def delete_expense(req: flask.Request, expense_id, auth_info) -> flask.Response:
