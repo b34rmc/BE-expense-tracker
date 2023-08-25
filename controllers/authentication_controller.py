@@ -14,13 +14,13 @@ def auth_token_add(req: request) -> Response:
     user = Users.query.filter_by(email=email).first()
     
     if user and check_password_hash(user.password, password):
-        expiration = datetime.utcnow() + timedelta(days=1)
+        expiration = datetime.utcnow() + timedelta(minutes=30)
         new_auth_token = Authentication(user_id=user.user_id, expiration=expiration)
         
         db.session.add(new_auth_token)
         db.session.commit()
         
-        return jsonify({"message": "Authentication token added", "auth": authentication_schema.dump(new_auth_token)}), 201
+        return jsonify({"message": "Auth-Token added", "auth": authentication_schema.dump(new_auth_token)}), 201
     else:
         return jsonify({"error": "Invalid email or password"}), 401
 

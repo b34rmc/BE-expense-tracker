@@ -25,10 +25,10 @@ def add_user(req: flask.Request, auth_info) -> flask.Response:
     db.session.add(new_user)
     db.session.commit()
     
-    return jsonify(user_schema.dump(new_user), 201)
+    return user_schema.dump(new_user), 201
     
-
-def get_users(req: flask.Request) -> flask.Response:
+@authenticate
+def get_users(req: flask.Request, auth_info) -> flask.Response:
     all_users = db.session.query(Users).all() 
     
     if all_users:
@@ -36,8 +36,8 @@ def get_users(req: flask.Request) -> flask.Response:
     
     return jsonify("no users found"), 404
 
-
-def get_user(req: flask.Request, user_id) -> flask.Response:
+@authenticate
+def get_user(req: flask.Request, user_id, auth_info) -> flask.Response:
     if not is_valid_uuid(user_id):
         return jsonify("Invalid user_id"), 400
     
@@ -48,8 +48,8 @@ def get_user(req: flask.Request, user_id) -> flask.Response:
     
     return jsonify("User not found"), 404
 
-
-def update_user(req: flask.Request, user_id) -> flask.Response:
+@authenticate
+def update_user(req: flask.Request, user_id, auth_info) -> flask.Response:
     if not is_valid_uuid(user_id):
         return jsonify("Invalid user id"), 404
     
@@ -66,8 +66,8 @@ def update_user(req: flask.Request, user_id) -> flask.Response:
     
     return jsonify(user_schema.dump(user)), 200
     
-
-def delete_user(req: flask.Request, user_id) -> flask.Response:
+@authenticate
+def delete_user(req: flask.Request, user_id, auth_info) -> flask.Response:
     user = Users.query.filter_by(user_id=user_id).first()
     
     if not user:

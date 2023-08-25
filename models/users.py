@@ -1,6 +1,6 @@
+from sqlalchemy.dialects.postgresql import UUID
 import uuid
 import marshmallow as ma
-from sqlalchemy.dialects.postgresql import UUID
 
 from db import db
 
@@ -13,23 +13,27 @@ class Users(db.Model):
     user_name = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(), unique=True, nullable=False)
     password = db.Column(db.String(), nullable=False)
+    profile_id = db.Column(UUID(as_uuid=True), db.ForeignKey("Profile.profile_id"), nullable=False)
     
     authentication = db.relationship('Authentication', backref='user')
+    profile = db.relationship('Profile', back_populates='users')
     
-    def __init__(self, first_name, last_name, user_name, email, password):
+    def __init__(self, first_name, last_name, user_name, email, password, profile_id):
         self.first_name = first_name
         self.last_name = last_name
         self.user_name = user_name
         self.email = email
         self.password = password
+        self.profile_id = profile_id
         
     def get_new_user():
-        return Users("", "", "", "", "")
+        return Users("", "", "", "", "", "")
     
     
 class UsersSchema(ma.Schema):
     class Meta:
-        fields = ['user_id', 'first_name', 'last_name', 'user_name', 'email', 'password']
+        fields = ['user_id', 'first_name', 'last_name', 'user_name', 'email', 'profile_id', 'profile']
+    profile = ma.fields.Nested("ProfileSchema")
         
 
 user_schema = UsersSchema()

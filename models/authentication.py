@@ -3,8 +3,7 @@ import marshmallow as ma
 from sqlalchemy.dialects.postgresql import UUID
 
 from db import db
-from .users import UsersSchema
-
+from models.users import UsersSchema
 
 class Authentication(db.Model):
     __tablename__ = 'Authentication'
@@ -19,9 +18,9 @@ class Authentication(db.Model):
         
 class AuthenticationSchema(ma.Schema):
     class Meta:
-        fields = ['auth_token', 'user_id', 'expiration']
+        fields = ['auth_token', 'user', 'expiration']
         
-    user = ma.fields.Nested(UsersSchema(only=('first_name', 'last_name', 'user_id')))
+    user = ma.fields.Nested(UsersSchema(only=['first_name', 'last_name', 'email', 'user_name']))
     
 
 authentication_schema = AuthenticationSchema()

@@ -1,9 +1,7 @@
 from functools import wraps
 from flask import request, jsonify
 from datetime import datetime
-from db import db
-from models.authentication import Authentication
-
+from models.authentication import Authentication  # Import the Authentication model
 
 def authenticate(func):
     @wraps(func)
@@ -14,9 +12,14 @@ def authenticate(func):
         
         auth_record = Authentication.query.filter_by(auth_token=auth_token).first()
         
-        if not auth_record or auth_record.expiration < datetime.utcnow():
-            return jsonify({"error": "Invalid or expired auth_token"}), 401
+        if not auth_record:
+            return jsonify({"error": "Invalid auth_token"}), 401
+        
+        current_time = datetime.utcnow()
+        if auth_record.expiration and auth_record.expiration < current_time:
+            return jsonify({"error": "Expired auth_token"}), 401
         
         return func(auth_info=auth_record, *args, **kwargs)
     
     return wrapper
+

@@ -13,10 +13,14 @@ from models.authentication import Authentication
 from models.expense import Expense
 from models.expense_category import ExpenseCategory
 from models.expense_tag import ExpenseTag
-from models.expense_tag_mapping import ExpenseTagMapping
+from models.profile_image import Profile
 
 from routes.user_routes import user
+from routes.profile_routes import profile
+from routes.expense_routes import expense
 from routes.authentication_routes import auth
+
+import config
 
 load_dotenv()
 
@@ -25,11 +29,6 @@ database_addr = os.environ.get("DATABASE_ADDR")
 database_user = os.environ.get("DATABASE_USER")
 database_port = os.environ.get("DATABASE_PORT")
 database_name = os.environ.get("DATABASE_NAME")
-
-first_name = os.environ.get("first_name")
-last_name = os.environ.get("last_name")
-user_name = os.environ.get("user_name")
-email = os.environ.get("email")
 
 app = Flask(__name__)
 
@@ -40,6 +39,8 @@ init_db(app, db)
 ma = Marshmallow(app)
 
 app.register_blueprint(user)
+app.register_blueprint(profile)
+app.register_blueprint(expense)
 app.register_blueprint(auth)
 
 def create_all():
@@ -48,27 +49,37 @@ def create_all():
         db.create_all()
         
         print("Checking to see if Admin exists...")
-        user = Users.query.filter_by(email=email).first()
+        user = Users.query.filter_by(email=config.email).first()
         if not user:
-            print(f"MattC not found! Creating user for Administrator")
+            print("Admin not found! Creating user for Admin...")
+            print("Creating Profile...")
+            new_profile = Profile(
+                position_x=config.position_x,
+                position_y=config.position_y,
+                image_url=config.image_url
+            )
+            db.session.add(new_profile)
+            db.session.commit()
+            print("profile created")
             
-            password = input(f"Enter password for {email}: ")
-            
+            password = input(f"\n\nCreate password for {config.email}: ")
             hashed_password = bcrypt.generate_password_hash(password).decode("utf8")
+            profile_id = new_profile.profile_id
             
             new_user = Users(
-                first_name=first_name,
-                last_name=last_name,
-                user_name=user_name,
-                email=email,
-                password=hashed_password
+                first_name=config.first_name,
+                last_name=config.last_name,
+                user_name=config.user_name,
+                email=config.email,
+                password=hashed_password,
+                profile_id=profile_id
             )
             
             db.session.add(new_user)
             db.session.commit()
             print("User created.")
         else:
-            print(f"user with the email: {email} found.")
+            print(f"user with the email: {config.email} found.")
 
         print("All Done")
 
@@ -77,4 +88,4 @@ bcrypt = Bcrypt(app)
 
 if __name__ == '__main__':
     create_all()
-    app.run(host="0.0.0.0", port=8086)
+    app.run(host="0.0.0.0", port=8086, debug=True)
