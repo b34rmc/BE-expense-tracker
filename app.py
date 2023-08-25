@@ -20,6 +20,7 @@ from routes.profile_routes import profile
 from routes.expense_routes import expense
 from routes.expense_category_routes import category
 from routes.expense_tag_routes import tag
+from routes.expense_tag_mapping_routes import mapping
 from routes.authentication_routes import auth
 
 import config
@@ -45,6 +46,7 @@ app.register_blueprint(profile)
 app.register_blueprint(expense)
 app.register_blueprint(category)
 app.register_blueprint(tag)
+app.register_blueprint(mapping)
 app.register_blueprint(auth)
 
 def create_all():
