@@ -49,6 +49,54 @@ app.register_blueprint(tag)
 app.register_blueprint(mapping)
 app.register_blueprint(auth)
 
+# def create_all():
+#     with app.app_context():
+#         print("Creating Tables")
+#         db.create_all()
+        
+#         print("Checking to see if Admin exists...")
+#         user = Users.query.filter_by(user_id=config.user_id).first()
+#         if not user:
+#             print("Admin not found! Creating user for Admin...")
+#             print("Creating Profile...")
+#             new_profile = Profile(
+#                 position_x=config.position_x,
+#                 position_y=config.position_y,
+#                 image_url=config.image_url
+#             )
+#             db.session.add(new_profile)
+#             db.session.commit()
+#             print("profile created")
+            
+#             print("creating expense category...")
+#             new_expense_category = ExpenseCategory(
+#                 category_name=config.category_name,
+#                 description=config.description
+#             )
+#             db.session.add(new_expense_category)
+#             db.session.commit()
+#             print("expense category created")
+            
+#             password = input(f"\n\nCreate password for {config.email}: ")
+#             hashed_password = bcrypt.generate_password_hash(password).decode("utf8")
+#             profile_id = new_profile.profile_id
+            
+#             new_user = Users(
+#                 first_name=config.first_name,
+#                 last_name=config.last_name,
+#                 user_name=config.user_name,
+#                 email=config.email,
+#                 password=hashed_password,
+#                 profile_id=profile_id
+#             )
+            
+#             db.session.add(new_user)
+#             db.session.commit()
+#             print("User created.")
+#         else:
+#             print(f"user with the email: {config.email} found.")
+
+#         print("All Done")
 def create_all():
     with app.app_context():
         print("Creating Tables")
@@ -90,9 +138,13 @@ def create_all():
                 profile_id=profile_id
             )
             
-            db.session.add(new_user)
-            db.session.commit()
-            print("User created.")
+            try:
+                db.session.add(new_user)
+                db.session.commit()
+                print("User created.")
+            except Exception as e:
+                print(f"Error creating user: {e}")
+                db.session.rollback()
         else:
             print(f"user with the email: {config.email} found.")
 
@@ -103,4 +155,4 @@ bcrypt = Bcrypt(app)
 
 if __name__ == '__main__':
     create_all()
-    app.run(host="0.0.0.0", port=8086, debug=True)
+    app.run(host="0.0.0.0", port=8089, debug=True)

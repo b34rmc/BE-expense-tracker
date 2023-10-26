@@ -14,7 +14,7 @@ def auth_token_add(req: request) -> Response:
     user = Users.query.filter_by(email=email).first()
     
     if user and check_password_hash(user.password, password):
-        expiration = datetime.utcnow() + timedelta(minutes=30)
+        expiration = datetime.utcnow() + timedelta(hours=18)
         new_auth_token = Authentication(user_id=user.user_id, expiration=expiration)
         
         db.session.add(new_auth_token)
@@ -26,8 +26,10 @@ def auth_token_add(req: request) -> Response:
 
 def auth_token_remove(req: request) -> Response:
     post_data = req.get_json()
-    
-    auth_token = post_data.get("auth_token")
+    print("post_data", post_data)
+    auth_token = None
+    if post_data:
+        auth_token = post_data.get("auth_token")
     
     auth_record = Authentication.query.filter_by(auth_token=auth_token).first()
     

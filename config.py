@@ -3,6 +3,7 @@ first_name = "Matt"
 last_name = "Caldwell"
 user_name = "MattC"
 email = "mattc@devpipeline.com"
+user_id = "f4b3dc66-0935-49f7-acf7-7634bfb9b68f"
 
 #profile config
 position_x = '50'

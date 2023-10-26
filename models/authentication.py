@@ -20,7 +20,7 @@ class AuthenticationSchema(ma.Schema):
     class Meta:
         fields = ['auth_token', 'user', 'expiration']
         
-    user = ma.fields.Nested(UsersSchema(only=['first_name', 'last_name', 'email', 'user_name']))
+    user = ma.fields.Nested(UsersSchema(only=['first_name', 'last_name', 'email', 'user_name', 'user_id']))
     
 
 authentication_schema = AuthenticationSchema()

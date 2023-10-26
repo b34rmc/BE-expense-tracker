@@ -13,8 +13,7 @@ import config
 
 bcrypt = Bcrypt()
 
-@authenticate
-def add_user(req: flask.Request, auth_info) -> flask.Response:
+def add_user(req: flask.Request) -> flask.Response:
     post_data = req.get_json()
     new_user = Users.get_new_user()
     
@@ -79,7 +78,8 @@ def update_user(req: flask.Request, user_id, auth_info) -> flask.Response:
 
     db.session.commit()
     
-    return jsonify("user successfully updated:", user_schema.dump(user)), 200
+    # return jsonify("user successfully updated:", user_schema.dump(user)), 200
+    return jsonify({"message": "user updated successfully", "user": user_schema.dump(user)}), 200
     
 @authenticate
 def delete_user(req: flask.Request, user_id, auth_info) -> flask.Response:
