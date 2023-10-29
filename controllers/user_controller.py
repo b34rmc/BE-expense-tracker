@@ -78,7 +78,6 @@ def update_user(req: flask.Request, user_id, auth_info) -> flask.Response:
 
     db.session.commit()
     
-    # return jsonify("user successfully updated:", user_schema.dump(user)), 200
     return jsonify({"message": "user updated successfully", "user": user_schema.dump(user)}), 200
     
 @authenticate
