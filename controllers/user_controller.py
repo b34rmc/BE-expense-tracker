@@ -1,4 +1,4 @@
-from flask_bcrypt import Bcrypt
+from flask_bcrypt import Bcrypt, check_password_hash
 from flask import jsonify
 import flask
 from db import db
@@ -91,3 +91,17 @@ def delete_user(req: flask.Request, user_id, auth_info) -> flask.Response:
     db.session.commit()
     
     return jsonify("User Deleted"), 200
+
+@authenticate
+def verify_password(req: flask.Request, auth_info) -> flask.Response:
+    post_data = req.get_json()
+    
+    email = auth_info.user.email
+    password = post_data.get("password")
+    
+    user = Users.query.filter_by(email=email).first()
+    
+    if check_password_hash(user.password, password):
+        return jsonify({"message": "passwords match"}), 200
+    
+    return jsonify({"message": "passwords dont match"}), 400
