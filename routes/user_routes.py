@@ -27,3 +27,7 @@ def update_user(user_id) -> Response:
 @user.route('/user/<user_id>', methods=['DELETE'])
 def delete_user(user_id) -> Response:
     return controllers.delete_user(request, user_id)
+
+@user.route('/user/verify-password', methods=['PUT'])
+def verify_password() -> Response:
+    return controllers.verify_password(request)
