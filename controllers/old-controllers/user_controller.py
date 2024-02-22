@@ -65,6 +65,7 @@ def update_user(req: flask.Request, user_id, auth_info) -> flask.Response:
         return jsonify("Invalid user id"), 400
     
     data = req.get_json()
+    password = data.get("password")
     
     user = Users.query.filter_by(user_id=user_id).first()
     
@@ -75,6 +76,9 @@ def update_user(req: flask.Request, user_id, auth_info) -> flask.Response:
     
     if not data:
         return jsonify("no fields to update"), 400
+    
+    if password:
+        data["password"] = bcrypt.generate_password_hash(data["password"]).decode("utf8")
 
     db.session.commit()
     
